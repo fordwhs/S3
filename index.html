@@ -723,7 +723,7 @@ const speakers = {
     num: '場次 01',
     name: '大灣高中 × 南科管理局',
     title: '南科實地參訪',
-    bio: '[[link:https://www.stsp.gov.tw/web/indexGroups?frontTarget=DEFAULT:前往南科管理局官網]]'
+    bio: '[[url]]'
   },
   '02': {
     num: '場次 02',
@@ -761,9 +761,8 @@ function openModal(id) {
   const sections = ['學歷','現職（接案中）','現職（還沒賺錢的😂）','主要生涯經歷','曾任','曾任職業','演講與得獎','現職','專長','經歷','專長案件類型'];
   const html = lines.map(line => {
     // link syntax: [[link:URL:label]]
-    const linkMatch = line.match(/\[\[link:(.+?):(.+?)\]\]/);
-    if (linkMatch) {
-      return `<a href="${linkMatch[1]}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;border-bottom:1px solid rgba(200,55,26,0.3);padding-bottom:2px;">${linkMatch[2]} ↗</a>`;
+    if (line === '[[url]]') {
+      return '<a href="https://www.stsp.gov.tw/web/indexGroups?frontTarget=DEFAULT" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;border-bottom:1px solid rgba(200,55,26,0.3);padding-bottom:2px;">前往南科管理局官網 ↗</a>';
     }
     if (sections.includes(line.trim())) {
       return `<strong style="display:block;color:var(--ink);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;margin-top:20px;margin-bottom:6px;">${line}</strong>`;
