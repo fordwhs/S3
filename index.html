@@ -483,10 +483,15 @@ footer::before {
   .lec-badge { width: 32px; height: 32px; font-size: 11px; margin-top: 3px; }
 
   /* meta: stack date and loc on separate lines */
-  .lec-meta { flex-wrap: wrap; gap: 4px 8px; margin-bottom: 12px; }
+  .lec-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
   .lec-sep { display: none; }
-  .lec-date { width: 100%; }
-  .lec-loc { width: 100%; }
+  .lec-date { width: auto; }
+  .lec-loc { width: auto; }
 
   .lec-title {
     font-size: clamp(1.25rem, 4.5vw, 1.6rem);
@@ -563,7 +568,7 @@ footer::before {
   <div class="intro-row">
     <div class="intro-num">5</div>
     <div class="intro-text">
-      <p>五場講座，五種人生切面。<br>每一位講者都曾站在十字路口，選擇了一條少有人走的路。他們來這裡，不是要給你答案，而是讓你看見：邊界，從來都是可以被重畫的。</p>
+      <p>五場講座，五種人生切面。<br>每位講者都曾站在十字路口，選擇了一條少有人走的路。他們來這裡，不是要給你答案，而是讓你看見：邊界，從來都是可以被重畫的。</p>
     </div>
   </div>
 
@@ -718,7 +723,7 @@ const speakers = {
     num: '場次 01',
     name: '大灣高中 × 南科管理局',
     title: '南科實地參訪',
-    bio: '[[link:https://www.stsp.gov.tw/web/indexGroups?frontTarget=DEFAULT:前往南科管理局官網]]'
+    bio: '[[link:https://www.stsp.gov.tw:前往南科管理局官網]]'
   },
   '02': {
     num: '場次 02',
