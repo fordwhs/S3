@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>越界：畢業前的最後一堂課</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0c0a09;
+  --paper: #faf7f2;
+  --accent: #c8371a;
+  --muted: #6b6560;
+  --border: rgba(0,0,0,0.10);
+  --serif: 'Noto Serif TC', serif;
+  --sans: 'Noto Sans TC', sans-serif;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 17px;
+}
+
+/* ─── HERO ─────────────────────────────── */
+.hero {
+  background: var(--ink);
+  color: var(--paper);
+  position: relative;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 0;
+}
+
+/* 頂部：畢業前的最後一堂課 */
+.hero-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hero-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.hero-kicker-text {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: rgba(255,255,255,0.32);
+}
+
+/* 中央：越界 大字 */
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--paper);
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+}
+
+/* 底部列：世界由我定義（左）＋ 引言（右） */
+.hero-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 14px 56px 24px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  gap: 40px;
+}
+.hero-title-sub {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.05em;
+}
+.hero-title-sub .c {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.45);
+  display: inline-block;
+}
+.hero-title-sub .c:nth-child(5) { transform: translateY(-0.22em); font-size: 1.2em; }
+.hero-title-sub .c:nth-child(6) { transform: translateY(0.18em); font-size: 1.2em; }
+.hero-quote {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+  color: rgba(255,255,255,0.32);
+  line-height: 2;
+  text-align: right;
+  flex-shrink: 0;
+  max-width: 280px;
+}
+
+/* ─── MAIN ─────────────────────────────── */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 64px 56px 100px;
+}
+
+/* ─── INTRO ─────────────────────────────── */
+.intro-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  padding-bottom: 52px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 56px;
+}
+.intro-num {
+  font-size: 72px;
+  font-weight: 900;
+  font-family: var(--serif);
+  color: rgba(0,0,0,0.06);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: -4px;
+}
+.intro-text p {
+  font-size: 19px;
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+.lec-content,
+.lec-content .lec-meta,
+.lec-content .lec-date,
+.lec-content .lec-loc,
+.lec-content .lec-speaker-row,
+.lec-content .lec-tags,
+.lec-content .tag,
+.lec-content .lec-desc,
+.lec-content .lec-stat-label,
+.lec-content .lec-stat-val {
+  font-family: var(--sans);
+}
+
+/* ─── LECTURE CARD ─────────────────────── */
+/*
+  統一結構（全部四張）：
+  .lecture
+    .lec-index > .lec-badge
+    .lec-content
+      .lec-meta
+      h2.lec-title
+      .lec-speaker-row   ← 有講者顯示名字，無講者用 .no-speaker 隱藏但佔位
+      .lec-tags
+      p.lec-desc
+      (.lec-stats)       ← 僅 featured 卡片有
+*/
+.lecture {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 0 28px;
+  padding-bottom: 48px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
+.lecture:last-child { border-bottom: none; margin-bottom: 0; }
+
+.lec-badge {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.lec-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.lec-date {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.lec-sep {
+  width: 18px; height: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.lec-loc {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.lec-title {
+  font-family: var(--serif);
+  font-size: clamp(1.65rem, 3.2vw, 2.3rem);
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+  text-wrap: balance;
+}
+
+/* 講者行：一律存在，無講者時透明佔位維持垂直節奏 */
+.lec-speaker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 14px;
+  height: 22px;
+}
+.lec-speaker-row::before {
+  content: '';
+  width: 14px; height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+  flex-shrink: 0;
+}
+.lec-speaker-row.no-speaker {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lec-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.tag {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 11px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.lec-desc {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+/* ─── FEATURED (03) ─────────────────────── */
+.lecture.featured {
+  background: rgba(200, 55, 26, 0.05);
+  border-left: 3px solid var(--accent);
+  position: relative;
+}
+.featured .lec-badge { background: var(--accent); color: #fff; }
+.featured .tag { border-color: rgba(200,55,26,0.25); color: var(--accent); }
+
+.lec-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(200,55,26,0.12);
+}
+.lec-stat-icon  { font-size: 14px; color: var(--accent); margin-bottom: 6px; }
+.lec-stat-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.lec-stat-val {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+
+
+/* ─── SPEAKER MODAL ──────────────────────── */
+.speaker-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.speaker-modal-overlay.open {
+  display: flex;
+}
+.speaker-modal {
+  background: var(--paper);
+  max-width: 540px;
+  width: 100%;
+  padding: 48px;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.speaker-modal-close {
+  position: absolute;
+  top: 20px; right: 24px;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  line-height: 1;
+  padding: 4px;
+}
+.speaker-modal-close:hover { color: var(--ink); }
+.speaker-modal-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.speaker-modal-name {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.speaker-modal-title {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.speaker-modal-bio {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.85;
+  white-space: pre-line;
+}
+
+/* 講者行可點擊樣式 */
+.lec-speaker-row.clickable {
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.lec-speaker-row.clickable:hover {
+  color: var(--accent);
+}
+.lec-speaker-row.clickable::after {
+  content: '↗';
+  font-size: 11px;
+  opacity: 0.5;
+  margin-left: 4px;
+}
+
+/* ─── FOOTER ─────────────────────────────── */
+footer {
+  background: var(--ink);
+  padding: 80px 56px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+footer::before {
+  content: '越界';
+  font-family: var(--serif);
+  font-size: 200px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.022);
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1;
+}
+.footer-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 16px;
+  position: relative;
+}
+.footer-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  color: var(--paper);
+  margin-bottom: 32px;
+  line-height: 1.2;
+  position: relative;
+}
+.cta-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 18px 52px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.18s;
+  position: relative;
+}
+.cta-btn:hover { opacity: 0.84; }
+.footer-tags {
+  margin-top: 36px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.15em;
+  position: relative;
+}
+
+/* ─── RESPONSIVE ─────────────────────────── */
+@media (max-width: 680px) {
+
+  /* ── Hero ── */
+  .hero { min-height: 0; }
+  .hero-kicker { padding: 16px 20px; }
+  .hero-kicker-text { font-size: 13px; }
+  .hero-title { padding: 16px 20px 8px; font-size: clamp(3.6rem, 15vw, 5.5rem); }
+  .hero-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 20px 28px;
+    gap: 12px;
+  }
+  .hero-title-sub { font-size: clamp(1.1rem, 5vw, 1.6rem); }
+  .hero-quote { display: none; }
+
+  /* ── Main ── */
+  main { padding: 40px 20px 80px; }
+
+  /* ── Intro row ── */
+  .intro-row { gap: 20px; padding-bottom: 36px; margin-bottom: 40px; }
+  .intro-num { font-size: 52px; }
+  .intro-text p { font-size: 15px; }
+
+  /* ── Lecture cards ── */
+  .lecture {
+    grid-template-columns: 36px 1fr;
+    gap: 0 16px;
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+  }
+  .lec-badge { width: 32px; height: 32px; font-size: 11px; margin-top: 3px; }
+
+  /* meta: stack date and loc on separate lines */
+  .lec-meta { flex-wrap: wrap; gap: 4px 8px; margin-bottom: 12px; }
+  .lec-sep { display: none; }
+  .lec-date { width: 100%; }
+  .lec-loc { width: 100%; }
+
+  .lec-title {
+    font-size: clamp(1.25rem, 4.5vw, 1.6rem);
+    margin-bottom: 10px;
+  }
+  .lec-speaker-row { font-size: 12px; height: auto; margin-bottom: 12px; }
+  .lec-tags { gap: 6px; margin-bottom: 14px; }
+  .tag { font-size: 10px; padding: 3px 8px; }
+  .lec-desc { font-size: 14px; line-height: 1.8; }
+
+  /* speaker + link row */
+  div[style*="display:flex;align-items:center;gap:16px"] {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* ── Featured ── */
+  .lecture.featured {
+    margin: 0 -20px 40px;
+    padding: 32px 20px;
+    grid-template-columns: 36px 1fr;
+    gap: 0 16px;
+  }
+  .lec-stats { grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 24px; padding-top: 20px; }
+  .lec-stat-label { font-size: 10px; }
+  .lec-stat-val { font-size: 13px; }
+
+  /* ── Modal ── */
+  .speaker-modal {
+    padding: 28px 20px;
+    max-height: 85vh;
+    border-radius: 0;
+  }
+  .speaker-modal-name { font-size: 1.6rem; }
+  .speaker-modal-bio { font-size: 14px; }
+
+  /* ── Footer ── */
+  footer { padding: 56px 20px; }
+  footer::before { font-size: 100px; }
+  .footer-label { font-size: 11px; }
+  .footer-title { font-size: clamp(1.6rem, 6vw, 2.4rem); margin-bottom: 0; }
+  .footer-tags { font-size: 12px; margin-top: 28px; }
+
+  /* ── Intro splash ── */
+  #introSplash { padding: 28px 24px; }
+  #splashText { font-size: clamp(1.5rem, 6.5vw, 2.4rem); text-align: center; }
+  #splashHint { font-size: 13px; margin-top: 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══════════════════════════════════════════ -->
+<header class="hero">
+
+  <div class="hero-kicker">
+    <span class="hero-dot"></span>
+    <span class="hero-kicker-text">畢業前的最後一堂課</span>
+  </div>
+
+  <h1 class="hero-title">越界</h1>
+
+  <div class="hero-footer">
+    <span class="hero-title-sub"><span class="c">世</span><span class="c">界</span><span class="c">由</span><span class="c">我</span><span class="c">定</span><span class="c">義</span></span>
+    <p class="hero-quote">「世界是由你創造的，<br>而不是別人為你劃定的。」</p>
+  </div>
+
+</header>
+
+<!-- ══ MAIN ══════════════════════════════════════════ -->
+<main>
+
+  <div class="intro-row">
+    <div class="intro-num">5</div>
+    <div class="intro-text">
+      <p>五場講座，五種人生切面。<br>每一位講者都曾站在十字路口，選擇了一條少有人走的路。他們來這裡，不是要給你答案，而是讓你看見：邊界，從來都是可以被重畫的。</p>
+    </div>
+  </div>
+
+  <!-- ── 01 ── -->
+  <div class="lecture">
+    <div class="lec-badge">01</div>
+    <div class="lec-content">
+      <div class="lec-meta">
+        <span class="lec-date">05 / 06 · 週三 · 13:00–16:00</span>
+        <span class="lec-sep"></span>
+        <span class="lec-loc">南科實地參訪 · 校門口集合</span>
+      </div>
+      <h2 class="lec-title">全球最強半導體產業鏈的前世今生<span style="display:inline-block;font-family:var(--sans);font-size:0.38em;font-weight:700;letter-spacing:0.1em;color:#888;border:1px solid #ccc;padding:3px 10px;border-radius:2px;margin-left:12px;vertical-align:middle;white-space:nowrap;">報名已截止</span></h2>
+      <div class="lec-speaker-row clickable" onclick="openModal('01')">大灣高中 X 南科管理局</div>
+      <div class="lec-tags">
+        <span class="tag">世界科技核心</span>
+        <span class="tag">實地觀摩</span>
+        <span class="tag">產業脈動</span>
+      </div>
+      <p class="lec-desc">帶同學親自踏入科技心臟地帶，理解台灣如何透過一塊晶片定義全球科技秩序。這堂課我們會聆聽南科的過去，同時親眼見證未來。</p>
+    </div>
+  </div>
+
+  <!-- ── 02 ── -->
+  <div class="lecture">
+    <div class="lec-badge">02</div>
+    <div class="lec-content">
+      <div class="lec-meta">
+        <span class="lec-date">05 / 11 · 週一 · 13:00–15:00</span>
+        <span class="lec-sep"></span>
+        <span class="lec-loc">台灣颱風論壇</span>
+      </div>
+      <h2 class="lec-title">把興趣當飯吃！你一定看過的天氣圖文</h2>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+        <div class="lec-speaker-row clickable" style="margin-bottom:0" onclick="openModal('02')">賴重祐 · 台灣颱風論壇營運長</div>
+        <a href="https://www.facebook.com/twtybbs/?locale=zh_TW" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.08em;color:var(--accent);border:1px solid rgba(200,55,26,0.35);padding:3px 10px;border-radius:2px;text-decoration:none;white-space:nowrap;flex-shrink:0;">台灣颱風論壇 🔗</a>
+      </div>
+      <div class="lec-tags">
+        <span class="tag">全台最大天氣粉專</span>
+        <span class="tag">自媒體創業</span>
+        <span class="tag">數據變現</span>
+      </div>
+      <p class="lec-desc">營運長從青年時期單純的颱風迷戀出發，一步步與夥伴打造出全台最具影響力的氣象粉專。他將分享如何在傳統道路之外，開拓屬於自己的專業版圖。</p>
+    </div>
+  </div>
+
+  <!-- ── 03 FEATURED ── -->
+  <div class="lecture featured">
+    <div class="lec-badge">03</div>
+    <div class="lec-content">
+      <div class="lec-meta">
+        <span class="lec-date">日期待定 · 跨界傳奇場</span>
+        <span class="lec-sep"></span>
+        <span class="lec-loc">美秀集團前 BASS 手</span>
+      </div>
+      <h2 class="lec-title">金曲搖滾樂手的不羈靈魂</h2>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+        <div class="lec-speaker-row clickable" style="margin-bottom:0" onclick="openModal('03')">彭珮慈 · 英文老師 / 搖滾樂手 / 自由靈魂</div>
+        <a href="https://www.youtube.com/watch?v=S4JLJVVjevI" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.08em;color:var(--accent);border:1px solid rgba(200,55,26,0.35);padding:3px 10px;border-radius:2px;text-decoration:none;white-space:nowrap;flex-shrink:0;">認識美秀集團 🔗</a>
+      </div>
+      <div class="lec-tags">
+        <span class="tag">金曲樂團</span>
+        <span class="tag">轉職勇氣</span>
+        <span class="tag">不按劇本</span>
+      </div>
+      <p class="lec-desc">人生不該只有一種劇本。珮慈將分享她如何在截然不同的身份中切換，毅然離開穩定體制後，又如何重新定義「精彩」。這場講座，獻給所有不敢冒險的靈魂。</p>
+      <div class="lec-stats">
+        <div class="lec-stat">
+          <div class="lec-stat-label">金曲時期</div>
+          <div class="lec-stat-val">金曲樂團樂手</div>
+        </div>
+        <div class="lec-stat">
+          <div class="lec-stat-label">轉折選擇</div>
+          <div class="lec-stat-val">投身英文教職</div>
+        </div>
+        <div class="lec-stat">
+          <div class="lec-stat-label">現在狀態</div>
+          <div class="lec-stat-val">辭職擁抱自由</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 04 ── -->
+  <div class="lecture">
+    <div class="lec-badge">04</div>
+    <div class="lec-content">
+      <div class="lec-meta">
+        <span class="lec-date">05 / 29 · 週五 · 13:00–15:00</span>
+        <span class="lec-sep"></span>
+        <span class="lec-loc">必勝客迷因推手</span>
+      </div>
+      <h2 class="lec-title">保證惹怒義大利人！必勝客迷因推手</h2>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+        <div class="lec-speaker-row clickable" style="margin-bottom:0" onclick="openModal('04')">鄭亘甫 · 社群行銷人 / 環球旅者</div>
+        <a href="https://www.youtube.com/watch?v=3r5189aOxq8" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:0.08em;color:var(--accent);border:1px solid rgba(200,55,26,0.35);padding:3px 10px;border-radius:2px;text-decoration:none;white-space:nowrap;flex-shrink:0;">你回家的那一天，就是母親節 🔗</a>
+      </div>
+      <div class="lec-tags">
+        <span class="tag">環遊世界100天</span>
+        <span class="tag">社群行銷</span>
+        <span class="tag">斜槓人生</span>
+      </div>
+      <p class="lec-desc">那些轟動網路的獵奇披薩，背後推手就是他！亘甫的人生不在辦公室，他將分享環遊世界的視野，在變動快速的時代如何利用創意與迷因，在不按牌理出牌的時代玩轉行銷。</p>
+    </div>
+  </div>
+
+  <!-- ── 05 ── -->
+  <div class="lecture">
+    <div class="lec-badge">05</div>
+    <div class="lec-content">
+      <div class="lec-meta">
+        <span class="lec-date">06 / 01 · 週一 · 13:00–15:00</span>
+        <span class="lec-sep"></span>
+        <span class="lec-loc">憲法法庭辯護律師 蘇詣倫</span>
+      </div>
+      <h2 class="lec-title">憲法法庭的滋味：改變人生要懂法</h2>
+      <div class="lec-speaker-row clickable" onclick="openModal('05')">蘇詣倫 · 律師 / 講師 / 補習班名師</div>
+      <div class="lec-tags">
+        <span class="tag">法律實務</span>
+        <span class="tag">憲法法庭</span>
+        <span class="tag">改變人生</span>
+      </div>
+      <p class="lec-desc">高中課堂的法律不僅是考科，它更是可以改變人生的工具。蘇律師在憲法法庭上言詞辯護，他將用最真實的案例讓你看見法律如何撼動體制、重寫命運。</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══ FOOTER ══════════════════════════════════════════ -->
+<footer>
+  <p class="footer-label">準備好了嗎</p>
+  <h2 class="footer-title">跨越你的邊界</h2>
+
+  <p class="footer-tags">#世界由我造 · #畢業快樂</p>
+</footer>
+
+
+<!-- ══ SPEAKER MODAL ══════════════════════════════════ -->
+<div class="speaker-modal-overlay" id="speakerModal" onclick="closeModalOnOverlay(event)">
+  <div class="speaker-modal">
+    <button class="speaker-modal-close" onclick="closeModal()">✕</button>
+    <div class="speaker-modal-num" id="modalNum"></div>
+    <h2 class="speaker-modal-name" id="modalName"></h2>
+    <div class="speaker-modal-title" id="modalTitle"></div>
+    <div class="speaker-modal-bio" id="modalBio"></div>
+  </div>
+</div>
+
+<script>
+const speakers = {
+  '01': {
+    num: '場次 01',
+    name: '大灣高中 × 南科管理局',
+    title: '南科實地參訪',
+    bio: '[[link:https://www.stsp.gov.tw/web/indexGroups?frontTarget=DEFAULT:前往南科管理局官網]]'
+  },
+  '02': {
+    num: '場次 02',
+    name: '賴重祐',
+    title: '台灣颱風論壇營運長',
+    bio: '現職\n台灣颱風論壇營運長\n臺大天災中心智慧氣象與資料科學實驗室氣象數據分析師\n\n專長\n天氣預報及監測、颱風及天氣數據分析、AI氣象產品開發、氣象科普、自媒體社群經營\n\n曾任\n台灣整合防災工程技術顧問公司天氣分析師\n交通部公路總局防災督導員\n經濟部水利署極短期降雨預警計畫（2023）\n經濟部水利署災害緊急應變小組服務團計畫（2020–2024）\n\n學歷\n國立臺灣大學大氣科學系研究所\n國立臺灣海洋大學河海工程學學士'
+  },
+  '03': {
+    num: '場次 03',
+    name: '彭珮慈',
+    title: '英文老師 / 搖滾樂手 / 自由靈魂',
+    bio: '學歷\n大學｜師大教育系 × 英語系雙主修、特教系資優組（公費生）\n高中｜第三類組 / 英語資優班\n國中｜協同中學數理資優班\n國小｜音樂班\n\n現職（接案中）\n英文（雅思、高中）家教\n47雲端輔導室管理師（輔導學習歷程檔案、陪練面試）、文案寫手\n英文評量編輯\n演講講師\n\n現職（還沒賺錢的😂）\n創作歌手\n短影音創作者\n\n主要生涯經歷\n建國中學英語資優班正式老師\n美秀集團創團貝斯手\n\n曾任\n傳統整復推拿師、催眠師、動物溝通師、補習班營隊企劃\n\n演講與得獎\n40 多場演講，含師大新生訓練全大一演講、TED Talk\n樂團入圍金曲獎\n杏壇新星獎（師鐸獎青年教師獎項）\n微笑教案比賽得獎者'
+  },
+  '04': {
+    num: '場次 04',
+    name: '鄭亘甫',
+    title: '社群行銷人 / 環球旅者',
+    bio: '學歷\n建興國中 / 台南一中\n政治大學國貿系 + 廣電系\n\n經歷\n台灣奧美廣告文案（2013–2016）\n上海電通 isobar 創意組長（2016–2019）\n台灣電通 isobar 創意總監（2019–2023）\n\n現職\n自由接案創意人\n台北英文步行導覽'
+  },
+  '05': {
+    num: '場次 05',
+    name: '蘇詣倫',
+    title: '憲法法庭辯護律師 · 亞大僑光講師 · 補習班名師',
+    bio: '學歷\n政治大學法學士\n國立臺灣大學法學碩士\n\n經歷\n律師考試及格\n亞洲大學、僑光科技大學兼任教師\n保成、志光公職授課講師\n\n專長案件類型\n一般民事、刑事及家事案件\n訴願、行政訴訟與稅務爭訟\n不動產買賣糾紛\n各類契約之撰寫\n法律顧問'
+  }
+};
+
+function openModal(id) {
+  const s = speakers[id];
+  document.getElementById('modalNum').textContent = s.num;
+  document.getElementById('modalName').textContent = s.name;
+  document.getElementById('modalTitle').textContent = s.title;
+  // Render bio: lines starting with known section headers get bold styling
+  const lines = s.bio.split('\\n');
+  const sections = ['學歷','現職（接案中）','現職（還沒賺錢的😂）','主要生涯經歷','曾任','曾任職業','演講與得獎','現職','專長','經歷','專長案件類型'];
+  const html = lines.map(line => {
+    // link syntax: [[link:URL:label]]
+    const linkMatch = line.match(/\[\[link:(.+?):(.+?)\]\]/);
+    if (linkMatch) {
+      return `<a href="${linkMatch[1]}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-weight:700;font-size:14px;text-decoration:none;border-bottom:1px solid rgba(200,55,26,0.3);padding-bottom:2px;">${linkMatch[2]} ↗</a>`;
+    }
+    if (sections.includes(line.trim())) {
+      return `<strong style="display:block;color:var(--ink);font-size:12px;letter-spacing:0.12em;text-transform:uppercase;margin-top:20px;margin-bottom:6px;">${line}</strong>`;
+    }
+    return line ? `<span style="display:block;margin-bottom:2px;">${line}</span>` : '';
+  }).join('');
+  document.getElementById('modalBio').innerHTML = html;
+  document.getElementById('speakerModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('speakerModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('speakerModal')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+<!-- ══ INTRO SPLASH ══════════════════════════════════ -->
+<div id="introSplash" style="
+  position: fixed; inset: 0; z-index: 200;
+  background: #0c0a09;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+">
+  <!-- 十字路口背景 SVG -->
+  <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.38" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <!-- 道路 -->
+    <rect x="340" y="0" width="120" height="600" fill="#3a342c"/>
+    <rect x="0" y="240" width="800" height="120" fill="#3a342c"/>
+    <!-- 路面紋理線 -->
+    <line x1="400" y1="0" x2="400" y2="220" stroke="#faf7f2" stroke-width="3" stroke-dasharray="24 16" opacity="0.7"/>
+    <line x1="400" y1="380" x2="400" y2="600" stroke="#faf7f2" stroke-width="3" stroke-dasharray="24 16" opacity="0.7"/>
+    <line x1="0" y1="300" x2="320" y2="300" stroke="#faf7f2" stroke-width="3" stroke-dasharray="24 16" opacity="0.7"/>
+    <line x1="480" y1="300" x2="800" y2="300" stroke="#faf7f2" stroke-width="3" stroke-dasharray="24 16" opacity="0.7"/>
+    <!-- 路口斑馬線 -->
+    <rect x="340" y="210" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="364" y="210" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="388" y="210" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="412" y="210" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="436" y="210" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="340" y="360" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="364" y="360" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="388" y="360" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="412" y="360" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <rect x="436" y="360" width="16" height="30" fill="#faf7f2" opacity="0.45"/>
+    <!-- 遠景消失點透視線 -->
+    <line x1="340" y1="0" x2="200" y2="-100" stroke="#faf7f2" stroke-width="1" opacity="0.08"/>
+    <line x1="460" y1="0" x2="600" y2="-100" stroke="#faf7f2" stroke-width="1" opacity="0.08"/>
+  </svg>
+
+  <!-- 紅點裝飾 -->
+  <div style="width:8px;height:8px;border-radius:50%;background:#c8371a;margin-bottom:32px;animation:pulse 2s ease-in-out infinite;"></div>
+
+  <!-- 主文字 -->
+  <div id="splashText" style="
+    font-family:'Noto Serif TC',serif;
+    font-size:clamp(2rem,6vw,4rem);
+    font-weight:900;
+    color:#faf7f2;
+    letter-spacing:-0.02em;
+    text-align:center;
+    line-height:1.2;
+    position:relative;
+  ">
+    <span id="splashChar"></span><span id="splashCursor" style="color:#c8371a;animation:blink 0.8s step-end infinite;">|</span>
+  </div>
+
+  <!-- 提醒文字 -->
+  <div id="splashHint" style="
+    margin-top:48px;
+    font-family:'Noto Sans TC',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.15em;
+    color:rgba(255,255,255,0.7);
+    text-align:center;
+    line-height:2;
+    opacity:0;
+    transition:opacity 0.8s ease;
+  ">
+    提醒：點選各場講者名稱，可查看完整學經歷<br>
+    <span style="font-size:11px;opacity:0.6;letter-spacing:0.2em;">點擊任意處進入</span>
+  </div>
+</div>
+
+<style>
+@keyframes pulse {
+  0%,100% { transform:scale(1); opacity:1; }
+  50% { transform:scale(1.5); opacity:0.6; }
+}
+@keyframes blink {
+  0%,100% { opacity:1; } 50% { opacity:0; }
+}
+#introSplash.fade-out {
+  opacity:0;
+  transition:opacity 0.6s ease;
+  pointer-events:none;
+}
+</style>
+
+<script>
+(function(){
+  const text = '你準備好越界了嗎？';
+  const el = document.getElementById('splashChar');
+  const hint = document.getElementById('splashHint');
+  const splash = document.getElementById('introSplash');
+  let i = 0;
+
+  function typeNext() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(typeNext, i === 1 ? 200 : 120);
+    } else {
+      // 打完後顯示提示
+      setTimeout(() => { hint.style.opacity = '1'; }, 400);
+    }
+  }
+
+  function closeSplash() {
+    splash.classList.add('fade-out');
+    setTimeout(() => splash.remove(), 600);
+  }
+
+  // 開始打字
+  setTimeout(typeNext, 600);
+
+  // 點擊關閉
+  splash.addEventListener('click', closeSplash);
+
+  // Esc 關閉
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('introSplash')) closeSplash();
+  });
+})();
+</script>
+</body>
+</html>
